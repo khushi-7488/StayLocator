@@ -2,9 +2,8 @@ const express = require("express")
 const router = express.Router();
 const wrapAsync = require("../utils/wrapAsync.js")
 const ExpressError = require("../utils/ExpressError.js")
-const { listingSchema} = require("../schema.js");
+const { listingSchema } = require("../schema.js");
 const Listing = require("../models/listing.js")
-
 
 
 // validation as middleware 
@@ -44,6 +43,7 @@ router.post("/", validateListing, wrapAsync(async (req, res, next) => {
     listingData.image = { url: listingData.image };
     let newListing = new Listing(listingData);
     await newListing.save();
+    req.flash("success", "New listing created");
     res.redirect("/listings");
 }
 
@@ -62,6 +62,8 @@ router.put("/:id", validateListing, wrapAsync(async (req, res) => {
     let updatedListing = { ...req.body.listing };
     updatedListing.image = { url: req.body.listing.image }
     await Listing.findByIdAndUpdate(id, updatedListing);
+    req.flash("success", " listing updated");
+
     res.redirect("/listings");
 }))
 
@@ -70,6 +72,8 @@ router.delete("/:id", wrapAsync(async (req, res) => {
     let { id } = req.params;
     let deletedListing = await Listing.findByIdAndDelete(id);
     console.log(deletedListing);
+    req.flash("success", "Listing Deleted");
+
     res.redirect("/listings");
 }))
 
@@ -77,6 +81,10 @@ router.delete("/:id", wrapAsync(async (req, res) => {
 router.get("/:id", wrapAsync(async (req, res) => {
     let { id } = req.params;
     const listing = await Listing.findById(id).populate("reviews")
+    if(!listing){
+        req.flash("error", "Listing is not existing")
+        return res.redirect("/listings")
+    }
     res.render("listings/show.ejs", { listing })
 }))
 
