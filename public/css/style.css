@@ -144,3 +144,21 @@ object-fit: cover;
 .show-img{
     height: 30vh;
 }
+
+.btn-alignment{
+        display: flex;
+    justify-content: space-between;
+
+}
+
+.login-bts{
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-right: 1rem;
+}
+
+.fade-out{
+    opacity: 0;
+    transition: opacity 0.5s ease-out;
+}

@@ -17,7 +17,13 @@
         </li>
         <li class="list-group-item">Location : <%= listing.location %></li>
         <li class="list-group-item">Country : <%= listing.country %></li>
+        <li class="list-group-item">
+          Owned by : <%= listing.owner.username %>
+        </li>
       </ul>
+    </div>
+    <% if(currUser && listing.owner._id.equals(currUser._id)) {%>
+    <div>
       <div class="card-body">
         <a
           href="/listings/<%= listing._id %>/edit"
@@ -25,17 +31,19 @@
           >Edit this listing</a
         >
       </div>
+      <form method="POST" action="/listings/<%= listing._id %>?_method=DELETE">
+        <div class="d-grid gap-2 col-6 mx-auto mt-4 mb-4">
+          <button class="btn btn-outline-danger button-text" type="submit">
+            Delete
+          </button>
+        </div>
+      </form>
     </div>
-    <form method="POST" action="/listings/<%= listing._id %>?_method=DELETE">
-      <div class="d-grid gap-2 col-6 mx-auto mt-4 mb-4">
-        <button class="btn btn-outline-danger button-text" type="submit">
-          Delete
-        </button>
-      </div>
-    </form>
+    <%}%>
   </div>
+
   <div class="col-8 offset-2">
-    <hr />
+    <% if(currUser ){ %>
     <h4>Leave a review</h4>
     <form
       action="/listings/<%=listing._id%>/reviews"
@@ -68,13 +76,14 @@
       </div>
       <button class="btn btn-outline-dark">Submit</button>
     </form>
+    <%}%>
     <hr />
     <p><b>All Reviews</b></p>
     <div class="row">
       <% for(review of listing.reviews) { %>
       <div class="card col-5 mb-3 ms-3">
         <div class="class-body">
-          <h5 class="card-title">khushi</h5>
+          <h5 class="card-title"><%= review.author.username %></h5>
           <p class="card-text"><%=review.comment%></p>
           <p class="card-text"><%=review.rating%> star</p>
         </div>

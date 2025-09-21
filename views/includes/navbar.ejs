@@ -1,8 +1,8 @@
-<nav class="navbar navbar-expand-md bg-body-light border-bottom sticky-top" >
+<nav class="navbar navbar-expand-md bg-body-light border-bottom sticky-top">
   <div class="container-fluid">
     <a class="navbar-brand" href="/"
-      ><i class="fa-brands fa-airbnb fa-xl"></i
-    ><b> StayLocator </b></a>
+      ><i class="fa-brands fa-airbnb fa-xl"></i><b> StayLocator </b></a
+    >
     <button
       class="navbar-toggler"
       type="button"
@@ -14,18 +14,23 @@
     >
       <span class="navbar-toggler-icon"></span>
     </button>
-    <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-           
-<div class="menu menu-effect">
+    <div class="collapse navbar-collapse btn-alignment" id="navbarNavAltMarkup">
+      <div class="menu menu-effect">
         <ul>
           <li><a href="/listings">Home</a></li>
           <li><a href="/listings">All Listings</a></li>
           <li><a href="/listings/new">Add New Listing</a></li>
-          <!-- <li><a href="#">contact</a></li> -->
         </ul>
-        <!-- <a class="nav-link" href="/listings">Home</a>
-        <a class="nav-link" href="/listings">All Listings</a>
-        <a class="nav-link" href="/listings/new">Add new Listings</a> -->
+      </div>
+      <div class="login-btns">
+        <% if(!currUser){ %>
+
+        <a class="btn btn-dark" href="/login">Login</a>
+        <a class="btn btn-dark" href="/signup">SignUp</a>
+        <% }%>
+         <% if(currUser){ %>
+        <a class="btn btn-dark" href="/logout">Logout</a>
+        <%}%>
       </div>
     </div>
   </div>
