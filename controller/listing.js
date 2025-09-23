@@ -1,4 +1,6 @@
 const Listing = require("../models/listing.js")
+const { listingSchema } = require("../schema.js");
+const ExpressError = require("../utils/ExpressError.js");
 
 module.exports.index = async (req, res) => {
     const allListings = await Listing.find({})
@@ -10,14 +12,15 @@ module.exports.renderNewForm = async (req, res) => {
 }
 
 module.exports.create = async (req, res, next) => {
-    // let {title, description, image, price, country, location} = req.body;
+    let url = req.file.path;
+    let filename = req.file.filename;
+    console.log(url, "..", filename);
     let result = listingSchema.validate(req.body);
-    console.log(result);
     if (result.error) {
         throw new ExpressError(400, result.error)
     }
     let listingData = req.body.listing;
-    listingData.image = { url: listingData.image };
+    listingData.image = { url, filename };
     let newListing = new Listing(listingData);
     newListing.owner = req.user._id;
     await newListing.save();
@@ -25,22 +28,34 @@ module.exports.create = async (req, res, next) => {
     res.redirect("/listings");
 }
 
+module.exports.edit = async (req, res) => {
+    let { id } = req.params;
+    const listing = await Listing.findById(id);
+    res.render("listings/edit.ejs", { listing })
+}
+
 module.exports.update = async (req, res) => {
     let { id } = req.params;
     let updatedListing = { ...req.body.listing };
     updatedListing.image = { url: req.body.listing.image }
-    await Listing.findByIdAndUpdate(id, updatedListing);
+    let listing = await Listing.findByIdAndUpdate(id, updatedListing);
+
+    if (typeof req.file !== "undefined") {
+        let url = req.file.path;
+        let filename = req.file.filename;
+        listing.image = { url, filename };
+        await listing.save();
+    }
     req.flash("success", " listing updated");
 
     res.redirect(`/listings/${id}`);
 }
 
-module.exports.delete =async (req, res) => {
+module.exports.delete = async (req, res) => {
     let { id } = req.params;
     let deletedListing = await Listing.findByIdAndDelete(id);
     console.log(deletedListing);
     req.flash("success", "Listing Deleted");
-
     res.redirect("/listings");
 }
 
